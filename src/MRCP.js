@@ -1,9 +1,6 @@
 import debug from 'debug'
-import protocol from '../src/protocolDefinitions'
 import EventEmitter from 'events'
-
-
-const numberOfMessages = 0
+import protocol from '../src/protocolDefinitions'
 
 export default class MRCP extends EventEmitter {
   constructor(command, mril) {

@@ -1,5 +1,5 @@
-import Transport from './Transport'
 import SerialPort from 'serialport'
+import Transport from './Transport'
 
 export default class SerialTransport extends Transport {
   constructor(config = {}) {

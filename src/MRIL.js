@@ -1,6 +1,6 @@
 import debug from 'debug'
-import protocol from '../src/protocolDefinitions'
 import EventEmitter from 'events'
+import protocol from '../src/protocolDefinitions'
 
 let numberOfMessages = 0
 
