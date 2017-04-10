@@ -2,7 +2,12 @@
 <img src="https://cloud.githubusercontent.com/assets/3062564/24833060/720e582c-1cbe-11e7-833a-916da3948e28.png" alt="mrcl" width="70">
 
 # mrcl
-🤖 microPede robot control library. A lightweight JavaScript library that uses [mrcp](/glumb/mrcp) to control the robot.
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/glumb/mrcl/master/LICENSE.md)
+[![Travis](https://img.shields.io/travis/glumb/mrcl.svg)](https://travis-ci.org/glumb/mrcl)
+[![npm](https://img.shields.io/npm/v/mrcl.svg)](https://www.npmjs.com/package/mrcl)
+[![Codecov](https://img.shields.io/codecov/c/github/glumb/mrcl.svg)]()
+
+🤖 microPede robot control library. A lightweight JavaScript library that uses [mrcp](//github.com/glumb/mrcp) to control the robot.
 
 ```js
 import {Transport, MRCL, MRIL, MRCP, protocolDefinitions as pd } from 'mrcl'
