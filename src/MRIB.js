@@ -89,7 +89,7 @@ export default class MRIB {
     return this
   }
 
-  wait(ms, cb) {
+  delay(ms, cb) {
     this.createMRIL(`${protocol.MRIL.WAIT}${ms.toFixed(4)}`, cb)
 
     return this
@@ -123,6 +123,27 @@ export default class MRIB {
   moveToC(C, cb) {
     this.C = C
     this.createMoveCommand(cb)
+    return this
+  }
+  setOutput(pin, state, done) {
+    if (state !== 1 && state !== 0) {
+      console.log('state must be 1 or 0')
+      return this
+    }
+    this.createMRIL(`${protocol.MRIL.OUTPUT}${pin}${state}`, done)
+    return this
+  }
+  setInput(pin, state, done) {
+    if (state !== 1 && state !== 0) {
+      console.log('state must be 1 or 0')
+      return this
+    }
+    this.createMRIL(`${protocol.MRIL.INPUT}${pin}${state}`, done)
+    return this
+  }
+
+  setAdditionalAxis(axis, value, cb) {
+    this.createMRIL(`${protocol.MRIL.VELOCITY}${this.VELOCITY}${protocol.MRIL.ANGLE}${axis}`, cb)
     return this
   }
 

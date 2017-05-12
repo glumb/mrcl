@@ -2,12 +2,12 @@
  * MicroPede Robot Control Protocol
  */
 const MRCP = {
-  START_FRAME: 'S',
-  END_FRAME: ';',
+  START_FRAME: ':',
+  END_FRAME: '\r',
 
   QUEUE_IN: 'Q',
   EXECUTE: 'E',
-  WRITE: '?',
+  WRITE: 'W',
 
   FREE_MRIL_BUFFER: 'B',
 }
@@ -33,15 +33,13 @@ const MRIL = {
   INPUT: 'I',
   OUTPUT: 'O',
   SERIAL_IO: 'U',
-  WAIT: 'W',
+  WAIT: 'D',
 
   COMMAND_NUMBER: 'N',
 
   HALT: 'H',
 
   IS_MOVING: 'K',
-  GET_ANGLES: 'Q',
-  GET_POSE: 'P',
 }
 
 /**

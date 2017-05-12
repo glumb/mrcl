@@ -5,7 +5,7 @@ import protocol from '../src/protocolDefinitions'
 export default class MRCP extends EventEmitter {
   constructor(command, mril) {
     if (command !== protocol.MRCP.QUEUE_IN && command !== protocol.MRCP.EXECUTE && command !== protocol.MRCP.WRITE) {
-      throw `unknown command: ${command}`
+      throw `unknown MRCP command: ${command}`
     }
     if (mril.mrcp) {
       throw `MRIL: ${mril.getInstruction()} was already linked to a MRCP. make a copy of the MRIL to reuse it.`

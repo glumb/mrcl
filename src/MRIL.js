@@ -2,7 +2,7 @@ import debug from 'debug'
 import EventEmitter from 'events'
 import protocol from '../src/protocolDefinitions'
 
-let numberOfMessages = 0
+let numberOfMessages = 1
 
 export default class MRIL extends EventEmitter {
   constructor(instruction) {
@@ -28,9 +28,19 @@ export default class MRIL extends EventEmitter {
 
     this.bytes = this.preparedMRILMessage.length
   }
-
+/**
+ * the instruction send to the robot
+ * @return {[string]} preparedMRILMessage
+ */
   getInstruction() {
     return this.preparedMRILMessage
+  }
+/**
+ * the instruction used to construct the MRIL object. (number and spacing may differ)
+ * @return {[type]} raw instruction
+ */
+  getRawInstruction() {
+    return this.instruction
   }
 
   setExecuting() {
@@ -48,7 +58,6 @@ export default class MRIL extends EventEmitter {
 
   setExecuted() {
     this.state.executed = true
-    console.log('executed')
     this.emit('executed')
   }
 

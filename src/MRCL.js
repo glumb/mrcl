@@ -23,7 +23,7 @@ export default class MRCL extends EventEmitter {
 
     this.transport = Transport
     this.transport.onReceive(this._assembleResponse.bind(this))
-    this.freeReceiveBuffer = 0
+    this.freeReceiveBuffer = -1
 
     this.responseByteBuffer = ''
     this.frameStarted = false
@@ -47,8 +47,10 @@ export default class MRCL extends EventEmitter {
    */
   send(mrcp) {
     if (mrcp.getCommand() === protocol.MRCP.QUEUE_IN) {
+      log(`queueing in mrcp: ${mrcp.getMessage()}`)
       this.queueMRCP(mrcp)
     } else {
+      log(`queueing in mrcp: ${mrcp.getMessage()}`)
       this.sendMRCP(mrcp)
     }
   }
@@ -95,7 +97,7 @@ export default class MRCL extends EventEmitter {
   _transmitQueue() { // todo transmit immidiately on nt queue in
     if (this.commandQueue.length > 0) {
       const mrcp = this.commandQueue.shift()
-      log(`trying to transmit: ${mrcp.message}`)
+      log(`trying to transmit: ${mrcp.getMessage()}`)
 
       // rate limiting
       if (mrcp.getBytes() > this.freeReceiveBuffer) {
@@ -108,13 +110,13 @@ export default class MRCL extends EventEmitter {
             () => {
               // after sent:
               setTimeout(() => {
-                this._transmitQueue()
                 this.transmitInterval = false
+                this._transmitQueue()
               }, this.retryTransmitTimeout)
             })
         }
       } else {
-        this.freeReceiveBuffer -= mrcp.getBytes() // prediction
+        this.freeReceiveBuffer -= mrcp.getMRIL().getBytes() // prediction
 
         this._transmit(mrcp, () => {
           this._transmitQueue()
@@ -150,8 +152,11 @@ export default class MRCL extends EventEmitter {
    * @param  {string} resp transport response
    */
   _assembleResponse(resp) {
+    log(`response: ${resp}`)
+    if (resp.length == 0) {
+      return
+    }
     const response = resp.split(' ').join('')
-    log(`response: ${response}`)
     for (let i = 0, len = response.length; i < len; i++) {
       // read the incoming byte:
       const incomingByte = response[i].toUpperCase()
@@ -191,7 +196,9 @@ export default class MRCL extends EventEmitter {
   _parseCommand(command) {
     switch (command.charAt(0)) {
       case protocol.MRCP.FREE_MRIL_BUFFER:
-        this.freeReceiveBuffer = +command.substring(1)
+        // this.freeReceiveBuffer = +command.substring(1) // not reliable, the B response may come in delayed, resulting in a false buffer value
+        // just set it to an initial value
+        if (this.freeReceiveBuffer < 0) this.freeReceiveBuffer = +command.substring(1)
         log(`free receive buffer: ${this.freeReceiveBuffer}`)
         this.emit('free-buffer-changed', this.freeReceiveBuffer)
         this._transmitQueue()
@@ -204,12 +211,20 @@ export default class MRCL extends EventEmitter {
           if (mril.getNumber() === number) {
             switch (+command.charAt(1)) {
               case 0:
+                log(`command number: ${number} executing`)
                 mril.setExecuting()
                 this.emit('command:executing', mril)
                 break
               case 1:
+                log(`command number: ${number} executed`)
                 mril.setExecuted()
                 this.emit('command:executed', mril)
+
+                // see buffer explanation above
+                this.freeReceiveBuffer += mril.getBytes()
+                log(`free receive buffer: ${this.freeReceiveBuffer}`)
+                this.emit('free-buffer-changed', this.freeReceiveBuffer)
+                this._transmitQueue()
                 break
               default:
                 console.log(`unknown command: ${command}`)
