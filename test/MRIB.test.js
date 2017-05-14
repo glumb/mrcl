@@ -23,7 +23,7 @@ beforeEach(() => {
 })
 
 describe('MRIB', () => {
-  describe('#wait', () => {
+  describe('#delay', () => {
     it('should send a wait command', () => {
       Tp.on('transmit', (data) => {
         // skip 'receive free buffer' command
@@ -33,7 +33,7 @@ describe('MRIB', () => {
         }
       })
 
-      Mrib.wait(123)
+      Mrib.delay(123)
     })
   })
   describe('#moveLinear', () => {

@@ -49,16 +49,17 @@ describe('MRCL', () => {
     })
 
     it('should call transmit on Transport when free buffer size is sufficient', () => {
-      const mrcp = new MRCP(protocol.MRCP.QUEUE_IN, new MRIL('XYZ'))
-      const mrcl = new MRCL(Tp)
-
-      mrcl.send(mrcp)
-      Tp.emit('receive', `${protocol.MRCP.START_FRAME}${protocol.MRCP.FREE_MRIL_BUFFER}2${protocol.MRCP.END_FRAME}`)
-      expect(mrcl.getCommandsQueue()).to.contain(mrcp)
-      Tp.emit('receive', `${protocol.MRCP.START_FRAME}${protocol.MRCP.FREE_MRIL_BUFFER}2${protocol.MRCP.END_FRAME}`)
-      expect(mrcl.getCommandsQueue()).to.contain(mrcp)
-      Tp.emit('receive', `${protocol.MRCP.START_FRAME}${protocol.MRCP.FREE_MRIL_BUFFER}20${protocol.MRCP.END_FRAME}`)
-      expect(mrcl.getCommandsQueue()).to.not.contain(mrcp)
+      // dont rely on received buffer size anymore, since the buffer size may come in delay not representing the current free buffer size
+      // const mrcp = new MRCP(protocol.MRCP.QUEUE_IN, new MRIL('XYZ'))
+      // const mrcl = new MRCL(Tp)
+      //
+      // mrcl.send(mrcp)
+      // Tp.emit('receive', `${protocol.MRCP.START_FRAME}${protocol.MRCP.FREE_MRIL_BUFFER}2${protocol.MRCP.END_FRAME}`)
+      // expect(mrcl.getCommandsQueue()).to.contain(mrcp)
+      // Tp.emit('receive', `${protocol.MRCP.START_FRAME}${protocol.MRCP.FREE_MRIL_BUFFER}2${protocol.MRCP.END_FRAME}`)
+      // expect(mrcl.getCommandsQueue()).to.contain(mrcp)
+      // Tp.emit('receive', `${protocol.MRCP.START_FRAME}${protocol.MRCP.FREE_MRIL_BUFFER}20${protocol.MRCP.END_FRAME}`)
+      // expect(mrcl.getCommandsQueue()).to.not.contain(mrcp)
     })
 
     it('should call transmit on Transport for execute', (done) => {
