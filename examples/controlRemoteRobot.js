@@ -74,11 +74,11 @@ function moveInaCircle(x, y, z, r, amountOfSteps) {
   }
 }
 
-moveInaCircle(18, 0, 5, 8, 30)
-moveInaCircle(18, 0, 5, 7, 30)
-moveInaCircle(18, 0, 5, 6, 30)
-moveInaCircle(18, 0, 5, 5, 30)
-moveInaCircle(18, 0, 5, 3, 30)
+moveInaCircle(18, 0, 18, 4, 30)
+moveInaCircle(18, 0, 18, 4, 40)
+moveInaCircle(18, 0, 18, 4, 50)
+moveInaCircle(18, 0, 18, 4, 60)
+moveInaCircle(18, 0, 18, 4, 70)
   // .moveP2P(20, 29, 10, () => console.log('P2P'))
   // .setVelocity(5)
   // .execute().moveP2P(1, 2, 3)

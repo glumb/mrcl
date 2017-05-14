@@ -29,14 +29,14 @@
    bausRate: 9600,
  })
 
- transport.onReceive(msg => console.log(msg))
+ // transport.onReceive(msg => console.log(msg))
 
  const mrcl = new MRCL(transport, {
    autoTransmit: true,
  })
 
 
- // const helper = new StatusHelper(mrcl)
+ const helper = new StatusHelper(mrcl)
 
  const lineReader = readline.createInterface({
    input: fs.createReadStream(file),
@@ -49,7 +49,7 @@
    if (line.trim().length == 0) return // skip empty lines
 
    mril = new MRIL(line)
-   const cmd = new MRCP(protocol.MRCP.QUEUE_IN, mril)
+   const cmd = new MRCP(protocol.MRCP.WRITE, mril)
    mrcl.send(cmd)
  }).on('close', () => {
    mril.onExecuted(() => {

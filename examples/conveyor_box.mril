@@ -1,14 +1,12 @@
-M00 V20
+M00 V2 R50 O31
 X15 Y0 Z20 A0 B180 C0   # fahren in home position
-M01
-X15 Y-15 Z20 A0 B180 C0 # Aufnahmeposition
-I0 1                    # warten auf Signal von Förderband
-V1 R6 1                 # öffnen Greifer (je nach kalibrierung 0:zu, 1:auf)
-V5 Z15                  # langsames senken über Kiste
-V1 R6 0                 # schließen Greifer
-V10 Z20                 # anheben
-Y15                     # Ablageposition
-V5 Z15                  # senken
-V1 R6 1                 # öffnen
-V5 Z20                  # hochfahren
-D300
+I0 1 # warte auf Signal von Förderband
+M01 V50 A-180.00 B-0.00 C-157.65 X6.00 Y-15.00 Z21.00 R6 1
+M01 V10 A-180.00 B-0.00 C-157.65 X12.00 Y-18.00 Z21.00 #Aufnahmeposition
+V10 z16 # senken
+V0.11 R6 0.5 # greifen
+V10 z20 # heben
+V20 X16 Y-2.45 Z20.00 A180.00 B-0.00 C-157.65 # Ablageposition
+v10 z14 # senken
+v0.01 R6 1 # Greifer öffnen
+V20 z20 # heben und von vorne :D
