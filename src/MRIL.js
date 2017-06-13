@@ -5,7 +5,7 @@ import protocol from '../src/protocolDefinitions'
 let numberOfMessages = 1
 
 export default class MRIL extends EventEmitter {
-  constructor(instruction) {
+  constructor(instruction = '') {
     super()
 
     this.instruction = instruction
