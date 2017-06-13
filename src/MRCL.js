@@ -23,7 +23,7 @@ export default class MRCL extends EventEmitter {
 
     this.transport = Transport
     this.transport.onReceive(this._assembleResponse.bind(this))
-    this.freeReceiveBuffer = -1
+    this.freeReceiveBuffer = 300 // -1 to receive the the buffersize once
 
     this.responseByteBuffer = ''
     this.frameStarted = false
