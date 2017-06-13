@@ -17,6 +17,18 @@ export default class MRIB {
     return this
   }
 
+  clearQueue(cb) {
+    const mril = new MRIL()
+    if (cb) {
+      mril.onExecuted(cb)
+    }
+    const mrcp = new MRCP(this.mrcpCommand, mril)
+
+    this.MRCL.send(mrcp)
+
+    return this
+  }
+
   execute() {
     this.mrcpCommand = protocol.MRCP.EXECUTE
     return this
