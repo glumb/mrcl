@@ -12,7 +12,7 @@ import StatusHelper from './StatusHelper'
 
 SerialPort.list((err, ports) => {
   ports.forEach((port) => {
-    console.log(port.comName, 'use this as the "port" paramter for the SerialTransport instance')
+    console.log(port.comName, 'use this as the "port" parameter for the SerialTransport instance')
     console.log(port.manufacturer)
   })
 })
