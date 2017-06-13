@@ -2,12 +2,13 @@ import Table from 'cli-table'
 
 
 export default class StatusHelper {
-  constructor(mrcl) {
-    //
-    const table = new Table({
-      head: ['MRIL', 'sending', 'sent', 'executing', 'executed'],
-      colWidths: [70, 15, 15, 15, 15],
-    })
+  constructor(mrcl, fullsize = true) {
+    if (fullsize) {
+      const table = new Table({
+        head: ['MRIL', 'sending', 'sent', 'executing', 'executed'],
+        colWidths: [70, 15, 15, 15, 15],
+      })
+    }
 
     const MRCLTable = new Table({
       head: ['queue size', 'sent commands', 'freeReceiveBuffer'],
@@ -23,9 +24,6 @@ export default class StatusHelper {
     }
 
     function displayCommandTable() {
-      console.log('\x1Bc')
-
-      displayMRCLTable()
       table.splice(0, table.length)
 
       mrcl.getCommands().forEach((c) => {
@@ -35,17 +33,25 @@ export default class StatusHelper {
       console.log(table.toString())
     }
 
+    function display() {
+      console.log('\x1Bc')
+      displayMRCLTable()
+      if (fullsize) {
+        displayCommandTable()
+      }
+    }
+
     mrcl.on('command:executed', (c) => {
-      displayCommandTable()
+      display()
     })
     mrcl.on('command:executing', (c) => {
-      displayCommandTable()
+      display()
     })
     mrcl.on('command:sending', (c) => {
-      displayCommandTable()
+      display()
     })
     mrcl.on('command:sent', (c) => {
-      displayCommandTable()
+      display()
     })
   }
 }
