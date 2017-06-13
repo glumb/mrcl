@@ -30,76 +30,64 @@ const log = debug('test')
 
 const mrib = new MRIB(mrcl)
 
-const helper = new StatusHelper(mrcl)
+const helper = new StatusHelper(mrcl, false)
 
-
- // for (let i = 0; i < 3; i++) {
- //   mrib.queue()
- //   .moveLinear(10, 10, 10, 0, 180, 0, 10, () => console.log('done'))
- //   .moveLinear(10, -10, 10, 0, 180, 0, 20)
- //   .moveP2P(15, 0, 15, 0, 90, 0, 3)
- // }
- //
+function relativeCoordinatesForCircle(r, angle) {
+  angle %= 360
+  let x
+  let y
+  if (angle < 90) {
+    angle %= 90
+    x = r * Math.cos(angle / 180 * Math.PI)
+    y = r * Math.sin(angle / 180 * Math.PI)
+  } else if (angle < 180) {
+    angle %= 90
+    x = r * -Math.sin(angle / 180 * Math.PI)
+    y = r * Math.cos(angle / 180 * Math.PI)
+  } else if (angle < 270) {
+    angle %= 90
+    x = r * -Math.cos(angle / 180 * Math.PI)
+    y = r * -Math.sin(angle / 180 * Math.PI)
+  } else {
+    angle %= 90
+    x = r * Math.sin(angle / 180 * Math.PI)
+    y = r * -Math.cos(angle / 180 * Math.PI)
+  }
+  return { x, y }
+}
 
 
 function moveInaCircle(x, y, z, r, amountOfSteps) {
-  function relativeCoordinatesForCircle(r, angle) {
-    angle %= 360
-    let x
-    let y
-    if (angle < 90) {
-      angle %= 90
-      x = r * Math.cos(angle / 180 * Math.PI)
-      y = r * Math.sin(angle / 180 * Math.PI)
-    } else if (angle < 180) {
-      angle %= 90
-      x = r * -Math.sin(angle / 180 * Math.PI)
-      y = r * Math.cos(angle / 180 * Math.PI)
-    } else if (angle < 270) {
-      angle %= 90
-      x = r * -Math.cos(angle / 180 * Math.PI)
-      y = r * -Math.sin(angle / 180 * Math.PI)
-    } else {
-      angle %= 90
-      x = r * Math.sin(angle / 180 * Math.PI)
-      y = r * -Math.cos(angle / 180 * Math.PI)
-    }
-    return { x, y }
-  }
-
+  mrib.clearQueue()
   for (let i = 0; i < 360; i += (360 / amountOfSteps)) {
     const { x: xRel, y: yRel } = relativeCoordinatesForCircle(r, i)
 
-    mrib.queue().moveP2P(x + xRel, y + yRel, z, 0, 180, 0, 0.001)
+    mrib.queue().moveP2P(x + xRel, y + yRel, z, 0, 180, 0, 150)
   }
 }
 
-moveInaCircle(18, 0, 18, 4, 30)
-moveInaCircle(18, 0, 18, 4, 40)
-moveInaCircle(18, 0, 18, 4, 50)
-moveInaCircle(18, 0, 18, 4, 60)
-moveInaCircle(18, 0, 18, 4, 70)
-  // .moveP2P(20, 29, 10, () => console.log('P2P'))
-  // .setVelocity(5)
-  // .execute().moveP2P(1, 2, 3)
-  // .queue()
-  // .pose(0, Math.PI / 2, 0, () => console.log('pose'))
-  // .moveLinear(1, 1, 1)
+function moveInaHelix(x, y, z, r, h, amountOfSteps) {
+  mrib.clearQueue()
+  for (let i = 0; i < 360; i += (360 / amountOfSteps)) {
+    const { x: xRel, y: yRel } = relativeCoordinatesForCircle(r, i)
 
-// displayCommandTable()
-// mrcl.queueMRIL(['Q M0 X29 Y29E', 'Q M0 X29 Y29E', 'Q M0 X29 Y29E', 'Q M0 X29 Y29E', 'Q M0 X29 Y29E'])
-// mrcl.queueMRIL('Q M0 X29 Y29E', () => {
-//   log('EXECUTEEDDDMUHHHHHUHUHUHUHUHUHUHLOLOLOLOLLOL')
-// }).transmit()
-// mrcl.sendMRIL('Q M0 X0 Y0 Z0').sendMRIL('Q M01 X01 Y01 Z01')
-// log('YOLO END OF FILEEEE')
+    mrib.queue().moveP2P(x + xRel, y + yRel, z + i * h / 360, 0, 180, 0, 150)
+  }
+}
 
-// const move = ( X, Y, Z, cb) => mrcl.halt().moveP2P(X, Y, Z).done(cb)
-// mrcl.while(condition => mrcl.getIO(IO => condition(IO[0] == 1)),
-//   (done) => {
-//     mrcl.moveLinearRelative(-1).done(done)
-//   },
-// )
-// mrcl.getAngles()
-// mrcl.getPose()
-// mrcl.halt()
+const x = 19.5
+const y = 0
+const z = -5
+const radius = 3.5
+
+// moveInaCircle(x, y, z, radius, 30)
+// moveInaCircle(x, y, z, radius, 40)
+// moveInaCircle(x, y, z, radius, 50)
+// moveInaCircle(x, y, z, radius, 60)
+// moveInaCircle(x, y, z, radius, 70)
+
+const pitch = 2
+const height = 10
+for (let i = 0; i < height; i += pitch) {
+  moveInaHelix(x, y, z + i, radius, pitch, 60)
+}
