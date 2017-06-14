@@ -3,8 +3,9 @@ import Table from 'cli-table'
 
 export default class StatusHelper {
   constructor(mrcl, fullsize = true) {
+    let table
     if (fullsize) {
-      const table = new Table({
+      table = new Table({
         head: ['MRIL', 'sending', 'sent', 'executing', 'executed'],
         colWidths: [70, 15, 15, 15, 15],
       })
@@ -33,8 +34,9 @@ export default class StatusHelper {
       console.log(table.toString())
     }
 
+    console.log('\x1Bc')
     function display() {
-      console.log('\x1Bc')
+      process.stdout.write('\x1B[1;1f') // reset cursor
       displayMRCLTable()
       if (fullsize) {
         displayCommandTable()
