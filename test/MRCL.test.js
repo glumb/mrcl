@@ -22,17 +22,17 @@ beforeEach(() => {
 
 describe('MRCL', () => {
   describe('#send', () => {
-    it('should send a command to retrieve buffer size', (done) => {
-      const mrcp = new MRCP(protocol.MRCP.QUEUE_IN, new MRIL('XYZ'))
-      const mrcl = new MRCL(Tp)
-
-      Tp.once('transmit', (data, sent) => {
-        sent()
-        expect(data).to.include(protocol.MRCP.FREE_MRIL_BUFFER)
-        done()
-      })
-      mrcl.send(mrcp)
-    })
+    // it('should send a command to retrieve buffer size', (done) => {
+    //   const mrcp = new MRCP(protocol.MRCP.QUEUE_IN, new MRIL('XYZ'))
+    //   const mrcl = new MRCL(Tp)
+    //
+    //   Tp.once('transmit', (data, sent) => {
+    //     sent()
+    //     expect(data).to.include(protocol.MRCP.FREE_MRIL_BUFFER)
+    //     done()
+    //   })
+    //   mrcl.send(mrcp)
+    // })
 
     it('should call transmit on Transport for queue', (done) => {
       const mrcp = new MRCP(protocol.MRCP.QUEUE_IN, new MRIL('XYZ'))
@@ -75,13 +75,19 @@ describe('MRCL', () => {
       Tp.emit('receive', `${protocol.MRCP.START_FRAME}${protocol.MRCP.FREE_MRIL_BUFFER}1000${protocol.MRCP.END_FRAME}`)
     })
 
-    it('should add the queu mrcp command to queue', () => {
+    it('should add the queue mrcp command to queue', () => {
       const mrcp = new MRCP(protocol.MRCP.QUEUE_IN, new MRIL('XYZ'))
-      const mrcl = new MRCL(Tp)
+      const mrcl = new MRCL(Tp, {
+        autoTransmit: false,
+      })
 
       mrcl.send(mrcp)
 
       expect(mrcl.getCommandsQueue()).to.contain(mrcp)
+
+      mrcl.transmit()
+
+      expect(mrcl.getCommandsQueue()).to.not.contain(mrcp)
     })
 
     it('should not add the execute mrcp command to queue', () => {
