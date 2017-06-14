@@ -203,13 +203,15 @@ export default class MRCL extends EventEmitter {
         this.emit('free-buffer-changed', this.freeReceiveBuffer)
         this._transmitQueue()
         break
-      case protocol.MRIL.COMMAND_NUMBER:
-        const number = +command.substring(2)
+      case protocol.MRIL.COMMAND_NUMBER: {
+        const match = command.match(/N(0|1|2)(\d+)(.*)/i)
+        const number = +match[2]
+        const responseType = +match[1]
         log(`command number: ${number}`)
         for (const mrcp of this.sentCommands) {
           const mril = mrcp.getMRIL()
           if (mril.getNumber() === number) {
-            switch (+command.charAt(1)) {
+            switch (responseType) {
               case 0:
                 log(`command number: ${number} executing`)
                 mril.setExecuting()
@@ -217,7 +219,11 @@ export default class MRCL extends EventEmitter {
                 break
               case 1:
                 log(`command number: ${number} executed`)
-                mril.setExecuted()
+                if (match.length === 4) { // has payload
+                  mril.setExecuted(match[3])
+                } else {
+                  mril.setExecuted(match[3])
+                }
                 this.emit('command:executed', mril)
 
                 // see buffer explanation above
@@ -226,12 +232,16 @@ export default class MRCL extends EventEmitter {
                 this.emit('free-buffer-changed', this.freeReceiveBuffer)
                 this._transmitQueue()
                 break
+              case 2:
+              //  TODO implement error
+                break
               default:
                 console.log(`unknown command: ${command}`)
             }
-            break
           }
+          break
         }
+      }
 
         break
       default:

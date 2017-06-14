@@ -60,9 +60,10 @@ export default class MRIL extends EventEmitter {
     this.on('executing', cb)
   }
 
-  setExecuted() {
+  setExecuted(response = '') {
     this.state.executed = true
-    this.emit('executed')
+    this.response = response
+    this.emit('executed', response)
   }
 
   isExecuted() {

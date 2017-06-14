@@ -159,6 +159,34 @@ export default class MRIB {
     return this
   }
 
+  getPose(cb) {
+    this.createMRIL(protocol.MRIL.X + protocol.MRIL.Y + protocol.MRIL.Z + protocol.MRIL.A + protocol.MRIL.B + protocol.MRIL.C, (response) => {
+      const regex = /([XYZABC])\s*(-?\d*\.?\d+)/ig
+      const pose = {}
+      let match
+      while ((match = regex.exec(response)) !== null) {
+        pose[match[1].toLowerCase()] = +match[2]
+      }
+      cb(pose)
+    })
+
+    return this
+  }
+
+  getAngles(cb) {
+    this.createMRIL([0, 1, 2, 3, 4, 5].map(el => protocol.MRIL.ANGLE + el).join(''), (response) => {
+      const regex = /R(\d)\s*(-?\d*\.?\d+)/ig
+      const pose = []
+      let match
+      while ((match = regex.exec(response)) !== null) {
+        pose[match[1]] = +match[2]
+      }
+      cb(pose)
+    })
+
+    return this
+  }
+
   createMRIL(message, onExecuted) {
     const mril = new MRIL(message)
 
