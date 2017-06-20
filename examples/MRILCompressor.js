@@ -16,7 +16,9 @@
    }
    compress(mril) {
      // strip comments
-     mril = mril.substring(mril.indexOf('#') + 1)
+     if (mril.indexOf('#') >= 0) {
+       mril = mril.substring(0, mril.indexOf('#'))
+     }
 
      const regex = /([a-zA-Z])\s*(-?\d*\.?\d+)/ig
 
