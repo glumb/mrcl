@@ -15,6 +15,9 @@
      this.symbols = {}
    }
    compress(mril) {
+     // strip comments
+     mril = mril.substring(mril.indexOf('#') + 1)
+
      const regex = /([a-zA-Z])\s*(-?\d*\.?\d+)/ig
 
      const response = []
