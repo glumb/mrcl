@@ -9,7 +9,8 @@ export default class MRIB {
     this.MOVEMENT_METHOD = '00'
 
     this.MRCL = MRCL
-    this.mrcpCommand = protocol.MRCP.EXECUTE
+    this.mrcpCommand = false
+    this.instructions = []
   }
 
   queue() {
@@ -18,13 +19,7 @@ export default class MRIB {
   }
 
   clearQueue(cb) {
-    const mril = new MRIL()
-    if (cb) {
-      mril.onExecuted(cb)
-    }
-    const mrcp = new MRCP(this.mrcpCommand, mril)
-
-    this.MRCL.send(mrcp)
+    this.createMRIL('', cb)
 
     return this
   }
@@ -37,6 +32,10 @@ export default class MRIB {
   write() {
     this.mrcpCommand = protocol.MRCP.WRITE
     return this
+  }
+
+  dump() {
+    return this.instructions
   }
 
   setVelocity(v) {
@@ -187,16 +186,27 @@ export default class MRIB {
     return this
   }
 
+  comment(message) {
+    this.createMRIL(`# ${message}`)
+
+    return this
+  }
+
   createMRIL(message, onExecuted) {
-    const mril = new MRIL(message)
+    // no command - add to buffer
+    if (!this.mrcpCommand) {
+      this.instructions.push(message)
+    } else {
+      const mril = new MRIL(message)
 
-    if (onExecuted) {
-      mril.onExecuted(onExecuted)
+      if (onExecuted) {
+        mril.onExecuted(onExecuted)
+      }
+
+      const mrcp = new MRCP(this.mrcpCommand, mril)
+
+      this.MRCL.send(mrcp)
     }
-
-    const mrcp = new MRCP(this.mrcpCommand, mril)
-
-    this.MRCL.send(mrcp)
 
     return this
   }

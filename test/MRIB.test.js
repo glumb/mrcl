@@ -20,6 +20,7 @@ beforeEach(() => {
   Tp = new Transport()
   Mrcl = new MRCL(Tp)
   Mrib = new MRIB(Mrcl)
+  Mrib.execute()
 })
 
 describe('MRIB', () => {
