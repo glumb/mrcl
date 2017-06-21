@@ -1,6 +1,9 @@
+import debug from 'debug'
 import protocol from '../src/protocolDefinitions'
 import MRIL from './MRIL'
 import MRCP from './MRCP'
+
+const log = debug('MRIB')
 
 export default class MRIB {
   constructor(MRCL) {
@@ -248,7 +251,7 @@ export default class MRIB {
   }
 
   createMRIL(message, onExecuted) {
-    console.log(message)
+    log(message)
     // no command - add to buffer
     if (!this.mrcpCommand) {
       this.instructions.push(message)
