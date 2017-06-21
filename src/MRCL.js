@@ -136,6 +136,7 @@ export default class MRCL extends EventEmitter {
     this.emit('command:sending', mrcp)
 
     this.transport.transmit(mrcp.getMessage(), (err) => {
+      // set this before sending is done. Sent might return late and thus the command might return executed before 'is is maked as sent'
       this.sentCommands.push(mrcp)
       mrcp.setSent()
       this.emit('command:sent', mrcp)
@@ -208,6 +209,7 @@ export default class MRCL extends EventEmitter {
         const number = +match[2]
         const responseType = +match[1]
         log(`command number: ${number}`)
+        log(`response type: ${responseType}`)
         for (const mrcp of this.sentCommands) {
           const mril = mrcp.getMRIL()
           if (mril.getNumber() === number) {
@@ -233,13 +235,13 @@ export default class MRCL extends EventEmitter {
                 this._transmitQueue()
                 break
               case 2:
+                log(`unknown response type (N): ${responseType}`)
               //  TODO implement error
                 break
               default:
                 console.log(`unknown command: ${command}`)
             }
           }
-          break
         }
       }
 
