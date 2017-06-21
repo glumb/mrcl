@@ -7,6 +7,7 @@ export default class MRIB {
     this.X = this.Y = this.Z = this.A = this.B = this.C = 0
     this.VELOCITY = 10
     this.MOVEMENT_METHOD = '00'
+    this.ANGLES = [0, 0, 0, 0, 0, 0]
 
     this.MRCL = MRCL
     this.mrcpCommand = false
@@ -86,8 +87,45 @@ export default class MRIB {
         }
       }
     }
-
     this.createMoveCommand(cb)
+  }
+
+  moveAngles(M = this.MOVEMENT_METHOD, A0 = this.ANGLES[0], A1 = this.ANGLES[1], A2 = this.ANGLES[2], A3 = this.ANGLES[3], A4 = this.ANGLES[4], A5 = this.ANGLES[5], V = this.VELOCITY, cb) {
+    this.MOVEMENT_METHOD = M
+
+    this.ANGLES[0] = A0
+    if (typeof A1 === 'function') {
+      cb = A1
+    } else {
+      this.ANGLES[1] = A1
+      if (typeof A2 === 'function') {
+        cb = A2
+      } else {
+        this.ANGLES[2] = A2
+        if (typeof A3 === 'function') {
+          cb = A3
+        } else {
+          this.ANGLES[3] = A3
+          if (typeof A4 === 'function') {
+            cb = A4
+          } else {
+            this.ANGLES[4] = A4
+            if (typeof A5 === 'function') {
+              cb = A5
+            } else {
+              this.ANGLES[5] = A5
+              if (typeof V === 'function') {
+                cb = V
+              } else {
+                this.VELOCITY = V
+              }
+            }
+          }
+        }
+      }
+    }
+
+    this.createMoveAnglesCommand(cb)
   }
 
   moveLinear(X, Y, Z, A, B, C, V, cb) {
@@ -95,8 +133,18 @@ export default class MRIB {
     return this
   }
 
+  moveLinearAngles(A0, A1, A2, A3, A4, A5, V, cb) {
+    this.moveAngles('01', A0, A1, A2, A3, A4, A5, V, cb)
+    return this
+  }
+
   moveP2P(X, Y, Z, A, B, C, V, cb) {
     this.move('00', X, Y, Z, A, B, C, V, cb)
+    return this
+  }
+
+  moveP2PAngles(A0, A1, A2, A3, A4, A5, V, cb) {
+    this.moveAngles('00', A0, A1, A2, A3, A4, A5, V, cb)
     return this
   }
 
@@ -111,31 +159,37 @@ export default class MRIB {
     this.createMoveCommand(cb)
     return this
   }
+
   moveToY(Y, cb) {
     this.Y = Y
     this.createMoveCommand(cb)
     return this
   }
+
   moveToZ(Z, cb) {
     this.Z = Z
     this.createMoveCommand(cb)
     return this
   }
+
   moveToA(A, cb) {
     this.A = A
     this.createMoveCommand(cb)
     return this
   }
+
   moveToB(B, cb) {
     this.B = B
     this.createMoveCommand(cb)
     return this
   }
+
   moveToC(C, cb) {
     this.C = C
     this.createMoveCommand(cb)
     return this
   }
+
   setOutput(pin, state, done) {
     if (state !== 1 && state !== 0) {
       console.log('state must be 1 or 0')
@@ -144,6 +198,7 @@ export default class MRIB {
     this.createMRIL(`${protocol.MRIL.OUTPUT}${pin}${state}`, done)
     return this
   }
+
   setInput(pin, state, done) {
     if (state !== 1 && state !== 0) {
       console.log('state must be 1 or 0')
@@ -193,6 +248,7 @@ export default class MRIB {
   }
 
   createMRIL(message, onExecuted) {
+    console.log(message)
     // no command - add to buffer
     if (!this.mrcpCommand) {
       this.instructions.push(message)
@@ -213,6 +269,10 @@ export default class MRIB {
 
   createMoveCommand(cb) {
     this.createMRIL(`${protocol.MRIL.MOVEMENT_METHOD}${this.MOVEMENT_METHOD}${protocol.MRIL.VELOCITY}${this.VELOCITY}${protocol.MRIL.X}${this.X.toFixed(4)}${protocol.MRIL.Y}${this.Y.toFixed(4)}${protocol.MRIL.Z}${this.Z.toFixed(4)}${protocol.MRIL.A}${this.A.toFixed(4)}${protocol.MRIL.B}${this.B.toFixed(4)}${protocol.MRIL.C}${this.C.toFixed(4)}`, cb)
+  }
+
+  createMoveAnglesCommand(cb) {
+    this.createMRIL(`${protocol.MRIL.MOVEMENT_METHOD}${this.MOVEMENT_METHOD}${protocol.MRIL.VELOCITY}${this.VELOCITY}${protocol.MRIL.ANGLE}0${this.ANGLES[0].toFixed(4)}${protocol.MRIL.ANGLE}1${this.ANGLES[1].toFixed(4)}${protocol.MRIL.ANGLE}2${this.ANGLES[2].toFixed(4)}${protocol.MRIL.ANGLE}3${this.ANGLES[3].toFixed(4)}${protocol.MRIL.ANGLE}4${this.ANGLES[4].toFixed(4)}${protocol.MRIL.ANGLE}5${this.ANGLES[5].toFixed(4)}`, cb)
   }
 
 }
