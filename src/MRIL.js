@@ -25,13 +25,11 @@ export default class MRIL extends EventEmitter {
     this.preparedMRILMessage = instruction.split(' ').join('')
       .replace(new RegExp(`${protocol.MRIL.COMMAND_NUMBER}\\d+`, 'gi'), '')
 
-    if (this.preparedMRILMessage.indexOf('#') > 0) { // remove comment
+    if (this.preparedMRILMessage.indexOf('#') >= 0) { // remove comment
       this.preparedMRILMessage = this.preparedMRILMessage.substring(0, this.preparedMRILMessage.indexOf('#'))
     }
 
-    if (instruction.length !== 0) { // no message number for an empty message
-      this.preparedMRILMessage = protocol.MRIL.COMMAND_NUMBER + this.number + this.preparedMRILMessage
-    }
+    this.preparedMRILMessage = protocol.MRIL.COMMAND_NUMBER + this.number + this.preparedMRILMessage
 
     this.bytes = this.preparedMRILMessage.length
   }
