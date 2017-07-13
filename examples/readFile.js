@@ -15,8 +15,8 @@
   SerialTransport,
 } from '../src/index'
  import MRILCompressor from './MRILCompressor'
-
  import StatusHelper from './StatusHelper'
+
  const log = debug('readFile')
 
  const portArg = process.argv[2]
@@ -24,7 +24,7 @@
  const modeArg = process.argv[4]
 
 
- function sendFile(port, filename, mode = protocol.MRCP.EXECUTE) {
+ function sendFile(port, filename, mode = protocol.MRCP.QUEUE_IN) {
    console.log(`reading file: ${filename}`)
 
    const transport = new SerialTransport({
@@ -39,7 +39,7 @@
    })
 
 
-   const helper = new StatusHelper(mrcl, 'fullsize')
+   const helper = new StatusHelper(mrcl, 'list')
 
    const lineReader = readline.createInterface({
      input: fs.createReadStream(filename),
@@ -96,7 +96,7 @@
            },
            {
              name: 'Queue',
-             value: protocol.MRCP.QUEUE,
+             value: protocol.MRCP.QUEUE_IN,
            },
            {
              name: 'Write to EEPROM',
