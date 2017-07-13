@@ -19,7 +19,7 @@ SerialPort.list((err, ports) => {
 
 const transport = new SerialTransport({
   port: '/dev/cu.usbmodem2936941', // on mac, do ls /dev/{tty,cu}.* to list the ports
-  bausRate: 9600,
+  baudRate: 9600,
 })
 
 const mrcl = new MRCL(transport, {
@@ -30,7 +30,7 @@ const log = debug('test')
 
 const mrib = new MRIB(mrcl)
 
-const helper = new StatusHelper(mrcl, false)
+// const helper = new StatusHelper(mrcl, false)
 
 function relativeCoordinatesForCircle(r, angle) {
   angle %= 360
@@ -58,7 +58,6 @@ function relativeCoordinatesForCircle(r, angle) {
 
 
 function moveInaCircle(x, y, z, r, amountOfSteps) {
-  mrib.clearQueue()
   for (let i = 0; i < 360; i += (360 / amountOfSteps)) {
     const { x: xRel, y: yRel } = relativeCoordinatesForCircle(r, i)
 
@@ -67,7 +66,6 @@ function moveInaCircle(x, y, z, r, amountOfSteps) {
 }
 
 function moveInaHelix(x, y, z, r, h, amountOfSteps) {
-  mrib.clearQueue()
   for (let i = 0; i < 360; i += (360 / amountOfSteps)) {
     const { x: xRel, y: yRel } = relativeCoordinatesForCircle(r, i)
 
@@ -79,6 +77,8 @@ const x = 19.5
 const y = 0
 const z = -5
 const radius = 3.5
+
+mrib.clearQueue()
 
 // moveInaCircle(x, y, z, radius, 30)
 // moveInaCircle(x, y, z, radius, 40)

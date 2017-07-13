@@ -39,7 +39,7 @@
    })
 
 
-   const helper = new StatusHelper(mrcl, true)
+   const helper = new StatusHelper(mrcl, 'fullsize')
 
    const lineReader = readline.createInterface({
      input: fs.createReadStream(filename),
