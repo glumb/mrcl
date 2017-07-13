@@ -255,6 +255,8 @@ export default class MRIB {
     // no command - add to buffer
     if (!this.mrcpCommand) {
       this.instructions.push(message)
+    } else if (message.length === 0) {
+      this.MRCL.send((new MRCP(this.mrcpCommand, mril)))
     } else {
       const mril = new MRIL(message)
 
